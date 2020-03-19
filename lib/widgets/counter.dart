@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 
 import 'common_widget.dart';
 
-Widget counter(){
+Widget counter(Map<String,dynamic> data){
   return ListView(
     shrinkWrap: true,
       children: <Widget>[
@@ -11,9 +11,9 @@ Widget counter(){
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: <Widget>[
-            cardCount('1234', CONST_ACTIVE),
-            cardCount('1234', CONST_RECOVERED),
-            cardCount('1234', CONST_FATAL),
+            cardCount(data['totalConfirmed'].toString(), CONST_ACTIVE),
+            cardCount(data['totalRecovered'].toString(), CONST_RECOVERED),
+            cardCount(data["totalDeaths"], CONST_FATAL),
           ],
         )
       ],
