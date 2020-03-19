@@ -7,11 +7,18 @@ import 'package:flutter/material.dart';
 class Home extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Column(
+    return Stack(
       children: <Widget>[
-        counter(), 
-        // NewsFeed()
-        ],
+        Align(
+          alignment: Alignment.topLeft,
+          child: counter(),
+        ),
+        Positioned(
+            height: MediaQuery.of(context).size.height - 80,
+            width: MediaQuery.of(context).size.width,
+            top: 140,
+            child: newsFeed())
+      ],
     );
   }
 }
