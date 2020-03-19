@@ -13,7 +13,7 @@ Widget counter(Map<String,dynamic> data){
           children: <Widget>[
             cardCount(data['totalConfirmed'].toString(), CONST_ACTIVE),
             cardCount(data['totalRecovered'].toString(), CONST_RECOVERED),
-            cardCount(data["totalDeaths"], CONST_FATAL),
+            cardCount(data["totalDeaths"].toString(), CONST_FATAL),
           ],
         )
       ],

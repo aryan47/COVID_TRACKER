@@ -11,20 +11,26 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  Map<String, dynamic> countData = {};
-  Map<String, dynamic> newsData = {};
+  Map<String, dynamic> countData = {
+    'totalConfirmed': 0,
+    'totalRecovered': 0,
+    "totalDeaths": 0
+  };
+  List<dynamic> newsData = [];
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     fetchCount().then((value) {
-      countData = value;
+      setState(() {
+        countData = value;
+      });
     });
     fetchNews().then((value) {
-      newsData = value;
+      setState(() {
+        newsData = value;
+      });
     });
-    print(countData);
   }
 
   @override
@@ -36,10 +42,10 @@ class _HomeState extends State<Home> {
           child: counter(countData),
         ),
         Positioned(
-            height: MediaQuery.of(context).size.height - 80,
+            height: MediaQuery.of(context).size.height - 140,
             width: MediaQuery.of(context).size.width,
             top: 140,
-            child: newsFeed())
+            child: newsFeed(newsData))
       ],
     );
   }
