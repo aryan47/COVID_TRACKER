@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'services/news_service.dart';
+import 'view/country_list.dart';
 import 'view/home.dart';
 
 void main() => runApp(MyApp());
@@ -27,15 +29,56 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  Map<String, dynamic> countData = {
+    'totalConfirmed': 0,
+    'totalRecovered': 0,
+    "totalDeaths": 0
+  };
+  Map<String, dynamic> selectedData;
+  List<dynamic> newsData = [];
+  List<dynamic> country = [];
+  @override
+  void initState() {
+    super.initState();
+    fetchCount().then((value) {
+      country = value['areas'].map((value) => value['displayName']).toList();
+      print(country);
+      setState(() {
+        countData = value;
+        selectedData = new Map.from(countData);
+      });
+    });
+    fetchNews().then((value) {
+      setState(() {
+        newsData = value;
+      });
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Home(),
+      body: Home(countData: selectedData, newsData: newsData),
       floatingActionButton: FloatingActionButton(
-        onPressed: null,
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => Country(country: country)),
+          ).then((value) {
+            changeContext(value);
+          });
+        },
         tooltip: 'List',
         child: Icon(Icons.menu),
       ), // This trailing comma makes auto-formatting nicer for build methods.
     );
+  }
+
+  void changeContext(String selected) {
+    setState(() {
+      selectedData = countData['areas']
+          .where((value) => value['displayName'] == selected)
+          .toList()[0];
+    });
   }
 }

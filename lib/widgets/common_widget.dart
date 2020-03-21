@@ -6,7 +6,7 @@ Widget title(String text) {
     padding: const EdgeInsets.all(8.0),
     child: Center(
       child: Text(
-        text,
+        text??'',
         style: TextStyle(color: COLOR_ACTIVE, fontWeight: FontWeight.bold),
       ),
     ),

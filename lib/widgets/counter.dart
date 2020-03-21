@@ -7,7 +7,7 @@ Widget counter(Map<String,dynamic> data){
   return ListView(
     shrinkWrap: true,
       children: <Widget>[
-        title("Global Status"),
+        title(data['displayName']),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: <Widget>[
