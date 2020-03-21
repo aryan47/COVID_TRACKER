@@ -1,3 +1,6 @@
+import 'dart:async';
+
+import 'package:corona_tracker/shared/constants.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 
@@ -31,7 +34,8 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   DatabaseReference databaseReference;
-
+  String countApi;
+  String newsApi;
   Map<String, dynamic> countData = {
     'totalConfirmed': 0,
     'totalRecovered': 0,
@@ -43,21 +47,50 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   void initState() {
     super.initState();
+    initiateApiCall();
 
+    // refresh the api link
+    Timer.periodic(Duration(hours: FIREBASE_API_REFRESH_HR), (timer) {
+      initiateApiCall();
+    });
+
+    // refresh the count and news api
+    Timer.periodic(Duration(seconds: COUNT_AND_NEWS_API_REFRESH_SEC), (timer) {
+      countApiCall(countApi);
+      newsApiCall(newsApi);
+    });
+  }
+
+  void initiateApiCall() {
     databaseReference = FirebaseDatabase.instance.reference();
 
     fetchApis(databaseReference).then((value) {
-      fetchCount(value['count_api']).then((value) {
-        country = value['areas'].map((value) => value['displayName']).toList();
-        setState(() {
-          countData = value;
-          selectedData = new Map.from(countData);
-        });
+      print('initiate api call --------');
+
+      countApi = value['count_api'];
+      newsApi = value['news_api'];
+
+      countApiCall(countApi);
+      newsApiCall(newsApi);
+    });
+  }
+
+  void newsApiCall(value) {
+    print('fetch api call --------');
+    fetchNews(value).then((value) {
+      setState(() {
+        newsData = value;
       });
-      fetchNews(value['news_api']).then((value) {
-        setState(() {
-          newsData = value;
-        });
+    });
+  }
+
+  void countApiCall(value) {
+    print('count api call --------');
+    fetchCount(value).then((value) {
+      country = value['areas'].map((value) => value['displayName']).toList();
+      setState(() {
+        countData = value;
+        selectedData = new Map.from(countData);
       });
     });
   }

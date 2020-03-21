@@ -1,13 +1,10 @@
-import 'dart:developer';
-
-import 'package:corona_tracker/services/news_service.dart';
 import 'package:corona_tracker/widgets/counter.dart';
 import 'package:corona_tracker/widgets/news_feed.dart';
 import 'package:flutter/material.dart';
 
 class Home extends StatefulWidget {
   Home({this.countData, this.newsData});
-  
+
   final Map<String, dynamic> countData;
   final List<dynamic> newsData;
 
