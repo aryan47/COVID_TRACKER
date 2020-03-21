@@ -1,3 +1,4 @@
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 
 import 'services/news_service.dart';
@@ -29,28 +30,34 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  DatabaseReference databaseReference;
+
   Map<String, dynamic> countData = {
     'totalConfirmed': 0,
     'totalRecovered': 0,
     "totalDeaths": 0
   };
-  Map<String, dynamic> selectedData;
+  Map<String, dynamic> selectedData = {};
   List<dynamic> newsData = [];
   List<dynamic> country = [];
   @override
   void initState() {
     super.initState();
-    fetchCount().then((value) {
-      country = value['areas'].map((value) => value['displayName']).toList();
-      print(country);
-      setState(() {
-        countData = value;
-        selectedData = new Map.from(countData);
+
+    databaseReference = FirebaseDatabase.instance.reference();
+
+    fetchApis(databaseReference).then((value) {
+      fetchCount(value['count_api']).then((value) {
+        country = value['areas'].map((value) => value['displayName']).toList();
+        setState(() {
+          countData = value;
+          selectedData = new Map.from(countData);
+        });
       });
-    });
-    fetchNews().then((value) {
-      setState(() {
-        newsData = value;
+      fetchNews(value['news_api']).then((value) {
+        setState(() {
+          newsData = value;
+        });
       });
     });
   }

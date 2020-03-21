@@ -1,9 +1,14 @@
 import 'dart:convert';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:http/http.dart' as http;
 
-Future count() async {
-  final response = await http.get(
-      "https://www.bing.com/covid/data?IG=48FC2DBDE6EA4AEFABCDF500DE923B70");
+Future apis(DatabaseReference databaseReference) async {
+  final response = await databaseReference.once();
+  return response.value;
+}
+
+Future count(String url) async {
+  final response = await http.get(url);
   if (response.statusCode == 200) {
     // If the server did return a 200 OK response,
     // then parse the JSON.
@@ -15,9 +20,8 @@ Future count() async {
   }
 }
 
-Future news() async {
-  final response = await http.get(
-      "https://economictimes.indiatimes.com/etstatic/liveblogs/msid-74701965,callback-liveBlogTypeALL-1.htm");
+Future news(String url) async {
+  final response = await http.get(url);
   if (response.statusCode == 200) {
     // If the server did return a 200 OK response,
     // then parse the JSON.
