@@ -14,5 +14,5 @@ final CONST_ACTIVE = "Active";
 final CONST_RECOVERED = "Recovered";
 final CONST_FATAL = "Fatal";
 
-final FIREBASE_API_REFRESH_HR = 1;
+final FIREBASE_API_REFRESH_SEC = 40;
 final COUNT_AND_NEWS_API_REFRESH_SEC = 40;

@@ -25,7 +25,7 @@ class _HomeState extends State<Home> {
             height: MediaQuery.of(context).size.height - 140,
             width: MediaQuery.of(context).size.width,
             top: 140,
-            child: newsFeed(widget.newsData))
+            child: newsFeed(widget.newsData,context))
       ],
     );
   }

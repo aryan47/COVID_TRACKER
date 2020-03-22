@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:corona_tracker/shared/constants.dart';
+import 'package:corona_tracker/widgets/MyInheritedWidget.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 
@@ -8,7 +9,7 @@ import 'services/news_service.dart';
 import 'view/country_list.dart';
 import 'view/home.dart';
 
-void main() => runApp(MyApp());
+void main() => runApp(MyInheritedWidget(child: MyApp()));
 
 class MyApp extends StatelessWidget {
   @override
@@ -50,14 +51,24 @@ class _MyHomePageState extends State<MyHomePage> {
     initiateApiCall();
 
     // refresh the api link
-    Timer.periodic(Duration(hours: FIREBASE_API_REFRESH_HR), (timer) {
+    Timer.periodic(Duration(seconds: FIREBASE_API_REFRESH_SEC), (timer) {
       initiateApiCall();
     });
 
     // refresh the count and news api
-    Timer.periodic(Duration(seconds: COUNT_AND_NEWS_API_REFRESH_SEC), (timer) {
-      countApiCall(countApi);
-      newsApiCall(newsApi);
+    // Timer.periodic(Duration(seconds: COUNT_AND_NEWS_API_REFRESH_SEC), (timer) {
+    //   countApiCall(countApi);
+    //   newsApiCall(newsApi);
+    // });
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    MyInheritedWidget.of(context).refresh.stream.listen((event) {
+      if (event) {
+        initiateApiCall();
+      }
     });
   }
 
@@ -91,6 +102,7 @@ class _MyHomePageState extends State<MyHomePage> {
       setState(() {
         countData = value;
         selectedData = new Map.from(countData);
+        changeContext("India");
       });
     });
   }
