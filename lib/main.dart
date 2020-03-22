@@ -2,14 +2,39 @@ import 'dart:async';
 
 import 'package:corona_tracker/shared/constants.dart';
 import 'package:corona_tracker/widgets/MyInheritedWidget.dart';
+import 'package:corona_tracker/widgets/app_upgrade.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import 'services/news_service.dart';
 import 'view/country_list.dart';
 import 'view/home.dart';
 
-void main() => runApp(MyInheritedWidget(child: MyApp()));
+import 'package:get_version/get_version.dart';
+
+import 'dart:io' show Platform;
+import 'package:flutter/foundation.dart';
+
+void main() {
+  if (!kIsWeb) _setTargetPlatformForDesktop();
+  return runApp(MyInheritedWidget(child: MyApp()));
+}
+
+/// If the current platform is desktop, override the default platform to
+/// a supported platform (iOS for macOS, Android for Linux and Windows).
+/// Otherwise, do nothing.
+void _setTargetPlatformForDesktop() {
+  TargetPlatform targetPlatform;
+  if (Platform.isMacOS) {
+    targetPlatform = TargetPlatform.iOS;
+  } else if (Platform.isLinux || Platform.isWindows) {
+    targetPlatform = TargetPlatform.android;
+  }
+  if (targetPlatform != null) {
+    debugDefaultTargetPlatformOverride = targetPlatform;
+  }
+}
 
 class MyApp extends StatelessWidget {
   @override
@@ -34,9 +59,14 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  String _projectVersion = '';
+
   DatabaseReference databaseReference;
   String countApi;
   String newsApi;
+  String selectedCountry;
+  String latestAppVersion;
+  String playStoreUrl;
   Map<String, dynamic> countData = {
     'totalConfirmed': 0,
     'totalRecovered': 0,
@@ -45,9 +75,13 @@ class _MyHomePageState extends State<MyHomePage> {
   Map<String, dynamic> selectedData = {};
   List<dynamic> newsData = [];
   List<dynamic> country = [];
+  bool appStarted = false;
   @override
   void initState() {
+    _initPlatformState();
+
     super.initState();
+
     initiateApiCall();
 
     // refresh the api link
@@ -74,12 +108,13 @@ class _MyHomePageState extends State<MyHomePage> {
 
   void initiateApiCall() {
     databaseReference = FirebaseDatabase.instance.reference();
-
     fetchApis(databaseReference).then((value) {
       print('initiate api call --------');
 
-      countApi = value['count_api'];
-      newsApi = value['news_api'];
+      countApi = value['COUNT_API'];
+      newsApi = value['NEWS_API'];
+      latestAppVersion = value['LATEST_APP_VERSION'];
+      playStoreUrl = value['PLAY_STORE_URL'];
 
       countApiCall(countApi);
       newsApiCall(newsApi);
@@ -102,13 +137,43 @@ class _MyHomePageState extends State<MyHomePage> {
       setState(() {
         countData = value;
         selectedData = new Map.from(countData);
-        changeContext("India");
+        changeContext(selectedCountry ?? 'India');
       });
     });
   }
 
+  // Platform messages are asynchronous, so we initialize in an async method.
+  void _initPlatformState() async {
+    String projectVersion;
+    // Platform messages may fail, so we use a try/catch PlatformException.
+    try {
+      projectVersion = await GetVersion.projectVersion;
+    } on PlatformException {
+      projectVersion = 'Failed to get project version.';
+    }
+
+    // If the widget was removed from the tree while the asynchronous platform
+    // message was in flight, we want to discard the reply rather than calling
+    // setState to update our non-existent appearance.
+    if (!mounted) return;
+
+    _projectVersion = projectVersion;
+  }
+
   @override
   Widget build(BuildContext context) {
+    if (!appStarted &&
+        _projectVersion.isNotEmpty &&
+        latestAppVersion.isNotEmpty) {
+      appStarted = true;
+      Future.delayed(Duration.zero,
+          () => checkAppVersion(_projectVersion, latestAppVersion, context, playStoreUrl));
+      Timer.periodic(Duration(minutes: 30), (timer) {
+        Future.delayed(Duration.zero,
+            () => checkAppVersion(_projectVersion, latestAppVersion, context, playStoreUrl));
+      });
+    }
+
     return Scaffold(
       body: Home(countData: selectedData, newsData: newsData),
       floatingActionButton: FloatingActionButton(
@@ -127,6 +192,7 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   void changeContext(String selected) {
+    selectedCountry = selected;
     setState(() {
       selectedData = countData['areas']
           .where((value) => value['displayName'] == selected)
