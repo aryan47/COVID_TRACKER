@@ -104,24 +104,7 @@ class _MyHomePageState extends State<MyHomePage> {
     Timer.periodic(Duration(seconds: FIREBASE_API_REFRESH_SEC), (timer) {
       initiateApiCall();
     });
-
-    // refresh the count and news api
-    // Timer.periodic(Duration(seconds: COUNT_AND_NEWS_API_REFRESH_SEC), (timer) {
-    //   countApiCall(countApi);
-    //   newsApiCall(newsApi);
-    // });
   }
-
-  // 
-
-  var refreshKey = GlobalKey<RefreshIndicatorState>();
-  Future<Null> refreshList() async {
-    refreshKey.currentState?.show(atTop: false);
-    await Future.delayed(Duration(seconds: 2));
-
-    return null;
-  }
-  // 
 
   @override
   void didChangeDependencies() {

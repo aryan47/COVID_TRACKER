@@ -14,38 +14,50 @@ Widget newsFeed(List<dynamic> data, BuildContext context) {
 
   return RefreshIndicator(
     onRefresh: refreshList,
-    child: ListView.separated(
-      shrinkWrap: true,
-      physics: ScrollPhysics(),
-      itemCount: data?.length,
-      itemBuilder: (context, index) {
-        return Container(
-          decoration: BoxDecoration(color: Colors.white),
-          child: ListTile(
-            leading: Container(
-              padding: EdgeInsets.all(3),
-              decoration: BoxDecoration(
+    child: Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(30),
+          topRight: Radius.circular(30),
+        ),
+      ),
+      child: ListView.separated(
+        shrinkWrap: true,
+        physics: ScrollPhysics(),
+        itemCount: data?.length,
+        itemBuilder: (context, index) {
+          return Container(
+            decoration: BoxDecoration(color: Colors.white),
+            child: ListTile(
+              leading: Container(
+                padding: EdgeInsets.all(3),
+                decoration: BoxDecoration(
                   border: Border.all(color: Colors.red),
-                  borderRadius: BorderRadius.all(Radius.circular(8))),
-              child: Text(
-                removeAllHtmlTags(data[index]['shortDateTime'] ?? ''),
-                style: TextStyle(color: Colors.red, fontSize: 10),
+                  borderRadius: BorderRadius.all(
+                    Radius.circular(8),
+                  ),
+                ),
+                child: Text(
+                  removeAllHtmlTags(data[index]['shortDateTime'] ?? ''),
+                  style: TextStyle(color: Colors.red, fontSize: 10),
+                ),
+              ),
+              title: Text(
+                removeAllHtmlTags(data[index]['title'] ?? ''),
+                style: TextStyle(color: COLOR_FONT),
+              ),
+              subtitle: Text(
+                removeAllHtmlTags(data[index]['smallDesc'] ?? ''),
+                style: TextStyle(color: COLOR_SUB_FONT),
               ),
             ),
-            title: Text(
-              removeAllHtmlTags(data[index]['title'] ?? ''),
-              style: TextStyle(color: COLOR_FONT),
-            ),
-            subtitle: Text(
-              removeAllHtmlTags(data[index]['smallDesc'] ?? ''),
-              style: TextStyle(color: COLOR_SUB_FONT),
-            ),
-          ),
-        );
-      },
-      separatorBuilder: (BuildContext context, int index) {
-        return Divider(color: Colors.black);
-      },
+          );
+        },
+        separatorBuilder: (BuildContext context, int index) {
+          return Divider(color: Colors.black);
+        },
+      ),
     ),
   );
 }

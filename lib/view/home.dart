@@ -13,20 +13,46 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
+  bool _isExpanded = false;
+
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: <Widget>[
-        Align(
-          alignment: Alignment.topLeft,
-          child: counter(widget.countData),
+    return CustomScrollView(slivers: <Widget>[
+      SliverAppBar(
+        expandedHeight: 200,
+        floating: false,
+        backgroundColor: Colors.grey,
+        pinned: true,
+        flexibleSpace: FlexibleSpaceBar(
+          centerTitle: true,
+          titlePadding: EdgeInsets.all(5),
+          title: Icon(
+            Icons.live_tv,
+            color: Colors.red,
+          ),
+          background: ListView(
+            children: <Widget>[
+              counter(widget.countData),
+              Center(
+                child: FlatButton.icon(
+                    onPressed: () {},
+                    icon: Icon(Icons.info_outline),
+                    label: Text('Details')),
+              )
+            ],
+          ),
         ),
-        Positioned(
-            height: MediaQuery.of(context).size.height - 140,
-            width: MediaQuery.of(context).size.width,
-            top: 140,
-            child: newsFeed(widget.newsData, context))
-      ],
-    );
+      ),
+      SliverList(
+        delegate: SliverChildListDelegate(
+          [
+            Container(
+              color: Colors.grey,
+              child: newsFeed(widget.newsData, context),
+            ),
+          ],
+        ),
+      )
+    ]);
   }
 }
