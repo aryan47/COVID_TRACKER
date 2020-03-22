@@ -7,6 +7,8 @@ Widget title(String text) {
     child: Center(
       child: Text(
         text ?? '',
+        softWrap: false,
+        overflow: TextOverflow.fade,
         style: TextStyle(
           color: Colors.black,
           fontWeight: FontWeight.bold,

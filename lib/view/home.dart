@@ -25,11 +25,15 @@ class _HomeState extends State<Home> {
         pinned: true,
         flexibleSpace: FlexibleSpaceBar(
           centerTitle: true,
-          titlePadding: EdgeInsets.all(5),
-          title: Icon(
-            Icons.live_tv,
-            color: Colors.red,
-          ),
+          titlePadding: EdgeInsets.all(0),
+          title: FlatButton.icon(
+            padding: EdgeInsets.only(top:12),
+              onPressed: null,
+              icon: Icon(
+                Icons.live_tv,
+                color: Colors.red,
+              ),
+              label: Text('Live')),
           background: ListView(
             children: <Widget>[
               counter(widget.countData),
