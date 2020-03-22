@@ -6,6 +6,7 @@ import 'package:corona_tracker/widgets/app_upgrade.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:rxdart/rxdart.dart';
 
 import 'services/news_service.dart';
 import 'view/country_list.dart';
@@ -67,6 +68,8 @@ class _MyHomePageState extends State<MyHomePage> {
   String selectedCountry;
   String latestAppVersion;
   String playStoreUrl;
+  BehaviorSubject loading;
+  int loadedApiCount = 0;
   Map<String, dynamic> countData = {
     'totalConfirmed': 0,
     'totalRecovered': 0,
@@ -76,12 +79,25 @@ class _MyHomePageState extends State<MyHomePage> {
   List<dynamic> newsData = [];
   List<dynamic> country = [];
   bool appStarted = false;
+  bool lockUpdate = false;
   @override
   void initState() {
     _initPlatformState();
 
     super.initState();
 
+    loading = BehaviorSubject.seeded(false);
+    loading.stream.listen((event) {
+      if (event) {
+        loadedApiCount += 1;
+      }
+      if (loadedApiCount == 2) {
+        loadedApiCount = 0;
+        setState(() {
+          appStarted = true;
+        });
+      }
+    });
     initiateApiCall();
 
     // refresh the api link
@@ -95,6 +111,17 @@ class _MyHomePageState extends State<MyHomePage> {
     //   newsApiCall(newsApi);
     // });
   }
+
+  // 
+
+  var refreshKey = GlobalKey<RefreshIndicatorState>();
+  Future<Null> refreshList() async {
+    refreshKey.currentState?.show(atTop: false);
+    await Future.delayed(Duration(seconds: 2));
+
+    return null;
+  }
+  // 
 
   @override
   void didChangeDependencies() {
@@ -124,6 +151,7 @@ class _MyHomePageState extends State<MyHomePage> {
   void newsApiCall(value) {
     print('fetch api call --------');
     fetchNews(value).then((value) {
+      loading.sink.add(true);
       setState(() {
         newsData = value;
       });
@@ -133,6 +161,7 @@ class _MyHomePageState extends State<MyHomePage> {
   void countApiCall(value) {
     print('count api call --------');
     fetchCount(value).then((value) {
+      loading.sink.add(true);
       country = value['areas'].map((value) => value['displayName']).toList();
       setState(() {
         countData = value;
@@ -162,20 +191,24 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    if (!appStarted &&
-        _projectVersion.isNotEmpty &&
-        latestAppVersion.isNotEmpty) {
-      appStarted = true;
-      Future.delayed(Duration.zero,
-          () => checkAppVersion(_projectVersion, latestAppVersion, context, playStoreUrl));
+    if (appStarted && !lockUpdate) {
+      lockUpdate = true;
+      Future.delayed(
+          Duration.zero,
+          () => checkAppVersion(
+              _projectVersion, latestAppVersion, context, playStoreUrl));
       Timer.periodic(Duration(minutes: 30), (timer) {
-        Future.delayed(Duration.zero,
-            () => checkAppVersion(_projectVersion, latestAppVersion, context, playStoreUrl));
+        Future.delayed(
+            Duration.zero,
+            () => checkAppVersion(
+                _projectVersion, latestAppVersion, context, playStoreUrl));
       });
     }
 
     return Scaffold(
-      body: Home(countData: selectedData, newsData: newsData),
+      body: appStarted
+          ? Home(countData: selectedData, newsData: newsData)
+          : Center(child: CircularProgressIndicator()),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           Navigator.push(
