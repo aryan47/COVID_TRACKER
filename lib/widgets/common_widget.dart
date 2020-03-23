@@ -1,3 +1,4 @@
+import 'package:corona_tracker/services/common_service.dart';
 import 'package:corona_tracker/shared/constants.dart';
 import 'package:flutter/material.dart';
 
@@ -35,7 +36,7 @@ Widget cardCount(String data, String status) {
           ),
         ),
         Text(
-          data,
+          convertToCommaSep(data),
           style: TextStyle(color: Colors.white),
         ),
       ],

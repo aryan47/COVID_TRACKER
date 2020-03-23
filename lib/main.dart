@@ -192,7 +192,7 @@ class _MyHomePageState extends State<MyHomePage> {
           Duration.zero,
           () => checkAppVersion(
               _projectVersion, latestAppVersion, context, playStoreUrl));
-      Timer.periodic(Duration(minutes: 30), (timer) {
+      Timer.periodic(Duration(minutes: 10), (timer) {
         Future.delayed(
             Duration.zero,
             () => checkAppVersion(
