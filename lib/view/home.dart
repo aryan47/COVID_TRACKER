@@ -18,7 +18,7 @@ class _HomeState extends State<Home> {
   final refreshKey = GlobalKey<RefreshIndicatorState>();
   String shareLink = '';
   @override
-  void initState() { 
+  void initState() {
     super.initState();
   }
 
@@ -38,57 +38,54 @@ class _HomeState extends State<Home> {
       child: CustomScrollView(slivers: <Widget>[
         SliverAppBar(
           expandedHeight: 200,
-          floating: false,
+          floating: true,
           backgroundColor: COLOR_APP_BAR,
           pinned: true,
           flexibleSpace: FlexibleSpaceBar(
             centerTitle: true,
             titlePadding: EdgeInsets.all(0),
-            title: FlatButton.icon(
-                padding: EdgeInsets.only(top: 12),
-                onPressed: null,
-                icon: Icon(
-                  Icons.live_tv,
-                  color: Colors.red,
-                ),
-                label: Text('Live')),
+            title: null,
             background: ListView(
               children: <Widget>[
-                counter(widget.countData,shareLink),
+                counter(widget.countData, shareLink),
                 ButtonBar(
                   alignment: MainAxisAlignment.spaceAround,
-                  buttonPadding: EdgeInsets.all(0),
+                  buttonPadding: EdgeInsets.all(8),
                   children: <Widget>[
-                    FlatButton.icon(
+                    RaisedButton(
+                      elevation: 2.0,
+                      color: COLOR_RECOVERED,
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(5)),
                       onPressed: () {
                         MyInheritedWidget.of(context)
                             .detailsClicked
                             .sink
                             .add(true);
                       },
-                      icon: Icon(
-                        Icons.info_outline,
-                        color: COLOR_APP_BAR[700],
-                      ),
-                      label: Text(
+                      child: Text(
                         'Details',
-                        style: TextStyle(color: COLOR_APP_BAR[700]),
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                     ),
-                    FlatButton.icon(
+                    RaisedButton(
+                      elevation: 2.0,
+                      color: COLOR_RECOVERED,
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(5)),
                       onPressed: () {
                         MyInheritedWidget.of(context)
                             .showGlobalData
                             .sink
                             .add(true);
                       },
-                      icon: Icon(
-                        Icons.info_outline,
-                        color: COLOR_APP_BAR[700],
-                      ),
-                      label: Text(
+                      child: Text(
                         'Global',
-                        style: TextStyle(color: COLOR_APP_BAR[700]),
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                     ),
                   ],
