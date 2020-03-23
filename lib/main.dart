@@ -209,10 +209,12 @@ class _MyHomePageState extends State<MyHomePage> {
 
   void changeContext(String selected) {
     selectedCountry = selected;
-    setState(() {
-      selectedData = countData['areas']
-          .where((value) => value['displayName'] == selected)
-          .toList()[0];
-    });
+    if (selected.isNotEmpty) {
+      setState(() {
+        selectedData = countData['areas']
+            .where((value) => value['displayName'] == selected)
+            .toList()[0];
+      });
+    }
   }
 }
