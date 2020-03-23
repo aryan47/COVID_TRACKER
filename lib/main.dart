@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:corona_tracker/shared/constants.dart';
+import 'package:corona_tracker/view/details.dart';
 import 'package:corona_tracker/widgets/MyInheritedWidget.dart';
 import 'package:corona_tracker/widgets/app_upgrade.dart';
 import 'package:firebase_database/firebase_database.dart';
@@ -122,7 +123,7 @@ class _MyHomePageState extends State<MyHomePage> {
     });
     MyInheritedWidget.of(context).detailsClicked.stream.listen((event) {
       if (event) {
-        // changeContext('Global');
+        detailsPage();
       }
     });
   }
@@ -220,18 +221,27 @@ class _MyHomePageState extends State<MyHomePage> {
 
   void changeContext(String selected) {
     selectedCountry = selected;
-    if (selected.isNotEmpty && selected == "Global") {
-      selectedData = Map.from(countData);
+    if (selected != null && selected.isNotEmpty && selected == "Global") {
       setState(() {
-        selectedData.remove('areas');
+        selectedData = Map.from(countData);
       });
       print(selectedData);
-    } else if (selected.isNotEmpty) {
+    } else if (selected != null && selected.isNotEmpty) {
       setState(() {
         selectedData = countData['areas']
             .where((value) => value['displayName'] == selected)
             .toList()[0];
       });
     }
+  }
+
+  void detailsPage() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+          builder: (context) => Details(areas: selectedData['areas'] ?? [])),
+    ).then((value) {
+      changeContext(value);
+    });
   }
 }
