@@ -16,6 +16,11 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   final refreshKey = GlobalKey<RefreshIndicatorState>();
+  String shareLink = '';
+  @override
+  void initState() { 
+    super.initState();
+  }
 
   Future<Null> refreshList() async {
     refreshKey.currentState?.show(atTop: false);
@@ -27,6 +32,7 @@ class _HomeState extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
+    shareLink = MyInheritedWidget.of(context).shareLink;
     return RefreshIndicator(
       onRefresh: refreshList,
       child: CustomScrollView(slivers: <Widget>[
@@ -48,7 +54,7 @@ class _HomeState extends State<Home> {
                 label: Text('Live')),
             background: ListView(
               children: <Widget>[
-                counter(widget.countData),
+                counter(widget.countData,shareLink),
                 ButtonBar(
                   alignment: MainAxisAlignment.spaceAround,
                   buttonPadding: EdgeInsets.all(0),

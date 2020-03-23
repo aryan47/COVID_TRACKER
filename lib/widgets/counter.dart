@@ -1,13 +1,32 @@
 import 'package:corona_tracker/shared/constants.dart';
 import 'package:flutter/material.dart';
+import 'package:share/share.dart';
 
 import 'common_widget.dart';
 
-Widget counter(Map<String, dynamic> data) {
+Widget counter(Map<String, dynamic> data, String shareLink) {
   return ListView(
     shrinkWrap: true,
     children: <Widget>[
-      title(data['displayName'] ?? ''),
+      Stack(
+        children: <Widget>[
+          title(data['displayName'] ?? ''),
+          Align(
+            alignment: Alignment.topRight,
+            child: FlatButton.icon(
+              padding: EdgeInsets.only(right: 0),
+              onPressed: () {
+                Share.share(shareLink);
+              },
+              icon: Icon(
+                Icons.share,
+                color: Colors.red,
+              ),
+              label: Text('Share'),
+            ),
+          ),
+        ],
+      ),
       Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: <Widget>[

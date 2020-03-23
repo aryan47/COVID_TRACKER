@@ -69,6 +69,7 @@ class _MyHomePageState extends State<MyHomePage> {
   String selectedCountry;
   String latestAppVersion;
   String playStoreUrl;
+  String appShareLink;
   BehaviorSubject loading;
   int loadedApiCount = 0;
   Map<String, dynamic> countData = {
@@ -111,6 +112,7 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
+
     MyInheritedWidget.of(context).refresh.stream.listen((event) {
       if (event) {
         initiateApiCall();
@@ -137,6 +139,7 @@ class _MyHomePageState extends State<MyHomePage> {
       newsApi = value['NEWS_API'];
       latestAppVersion = value['LATEST_APP_VERSION'];
       playStoreUrl = value['PLAY_STORE_URL'];
+      appShareLink = value['APP_SHARE_LINK'];
 
       countApiCall(countApi);
       newsApiCall(newsApi);
@@ -186,6 +189,9 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
+        // save app sharelink
+    MyInheritedWidget.of(context).shareLink = appShareLink;
+
     if (appStarted && !lockUpdate) {
       lockUpdate = true;
       Future.delayed(
