@@ -50,7 +50,7 @@ class _HomeState extends State<Home> {
                 counter(widget.countData, shareLink),
                 ButtonBar(
                   alignment: MainAxisAlignment.spaceAround,
-                  buttonPadding: EdgeInsets.all(8),
+                  buttonPadding: EdgeInsets.all(13),
                   children: <Widget>[
                     RaisedButton(
                       elevation: 2.0,
