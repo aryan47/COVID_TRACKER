@@ -15,8 +15,6 @@ class MyInheritedWidget extends InheritedWidget {
   String _latestAppVersion;
   String _shareLink = '';
   BehaviorSubject _refresh = BehaviorSubject.seeded(false);
-  BehaviorSubject _globalData = BehaviorSubject.seeded(false);
-  BehaviorSubject _detailsClicked = BehaviorSubject.seeded(false);
 
   set latestAppVersion(String version) => _latestAppVersion = version;
   String get latestAppVersion => _latestAppVersion;
@@ -25,8 +23,6 @@ class MyInheritedWidget extends InheritedWidget {
   String get shareLink => _shareLink;
 
   BehaviorSubject get refresh => _refresh;
-  BehaviorSubject get showGlobalData => _globalData;
-  BehaviorSubject get detailsClicked => _detailsClicked;
 
   static MyInheritedWidget of(BuildContext context) {
     return context.dependOnInheritedWidgetOfExactType<MyInheritedWidget>();

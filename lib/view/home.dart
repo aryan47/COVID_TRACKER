@@ -37,59 +37,30 @@ class _HomeState extends State<Home> {
       onRefresh: refreshList,
       child: CustomScrollView(slivers: <Widget>[
         SliverAppBar(
-          expandedHeight: 200,
+          expandedHeight: 170,
           floating: true,
-          backgroundColor: COLOR_APP_BAR,
+          backgroundColor: Colors.white,
           pinned: true,
           flexibleSpace: FlexibleSpaceBar(
             centerTitle: true,
-            titlePadding: EdgeInsets.all(0),
-            title: null,
+            titlePadding: EdgeInsets.all(5),
+            title: Container(
+              padding: EdgeInsets.all(3),
+              decoration: BoxDecoration(
+                border: Border.all(color: Colors.red),
+                borderRadius: BorderRadius.all(
+                  Radius.circular(8),
+                ),
+              ),
+              child: Text(
+                'Live News',
+                style: TextStyle(color: Colors.red, fontSize: 10),
+              ),
+            ),
             background: ListView(
               children: <Widget>[
                 counter(widget.countData, shareLink),
-                ButtonBar(
-                  alignment: MainAxisAlignment.spaceAround,
-                  buttonPadding: EdgeInsets.all(13),
-                  children: <Widget>[
-                    RaisedButton(
-                      elevation: 2.0,
-                      color: COLOR_RECOVERED,
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(5)),
-                      onPressed: () {
-                        MyInheritedWidget.of(context)
-                            .detailsClicked
-                            .sink
-                            .add(true);
-                      },
-                      child: Text(
-                        'Details',
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
-                    RaisedButton(
-                      elevation: 2.0,
-                      color: COLOR_RECOVERED,
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(5)),
-                      onPressed: () {
-                        MyInheritedWidget.of(context)
-                            .showGlobalData
-                            .sink
-                            .add(true);
-                      },
-                      child: Text(
-                        'Global',
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
-                  ],
-                )
+                Divider()
               ],
             ),
           ),
@@ -98,7 +69,6 @@ class _HomeState extends State<Home> {
           delegate: SliverChildListDelegate(
             [
               Container(
-                color: COLOR_APP_BAR,
                 child: newsFeed(widget.newsData, context),
               ),
             ],

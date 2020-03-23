@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:corona_tracker/shared/constants.dart';
 import 'package:corona_tracker/view/details.dart';
+import 'package:corona_tracker/view/loading_screen.dart';
 import 'package:corona_tracker/widgets/MyInheritedWidget.dart';
 import 'package:corona_tracker/widgets/app_upgrade.dart';
 import 'package:firebase_database/firebase_database.dart';
@@ -62,7 +63,7 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   String _projectVersion = '';
-
+  int _currentIndex = 0;
   DatabaseReference databaseReference;
   String countApi;
   String newsApi;
@@ -118,22 +119,11 @@ class _MyHomePageState extends State<MyHomePage> {
         initiateApiCall();
       }
     });
-    MyInheritedWidget.of(context).showGlobalData.stream.listen((event) {
-      if (event) {
-        changeContext('Global');
-      }
-    });
-    MyInheritedWidget.of(context).detailsClicked.stream.listen((event) {
-      if (event) {
-        detailsPage();
-      }
-    });
   }
 
   void initiateApiCall() {
     databaseReference = FirebaseDatabase.instance.reference();
     fetchApis(databaseReference).then((value) {
-      print('initiate api call --------');
 
       countApi = value['COUNT_API'];
       newsApi = value['NEWS_API'];
@@ -147,7 +137,6 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   void newsApiCall(value) {
-    print('fetch api call --------');
     fetchNews(value).then((value) {
       loading.sink.add(true);
       setState(() {
@@ -157,7 +146,6 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   void countApiCall(value) {
-    print('count api call --------');
     fetchCount(value).then((value) {
       loading.sink.add(true);
       country = value['areas'].map((value) => value['displayName']).toList();
@@ -189,7 +177,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-        // save app sharelink
+    // save app sharelink
     MyInheritedWidget.of(context).shareLink = appShareLink;
 
     if (appStarted && !lockUpdate) {
@@ -209,23 +197,40 @@ class _MyHomePageState extends State<MyHomePage> {
     return Scaffold(
       body: appStarted
           ? Home(countData: selectedData, newsData: newsData)
-          : Center(child: CircularProgressIndicator()),
-      floatingActionButton: appStarted
-          ? FloatingActionButton(
-              backgroundColor: COLOR_APP_BAR,
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => Country(country: country)),
-                ).then((value) {
-                  changeContext(value);
-                });
+          : LoadingScreen(),
+      bottomNavigationBar: appStarted
+          ? BottomNavigationBar(
+              backgroundColor: Colors.grey[100],
+              onTap: (int index) {
+                _currentIndex = index;
+                switch (index) {
+                  case 0:
+                    detailsPage();
+                    break;
+                  case 1:
+                    countryList();
+                    break;
+                  case 2:
+                    changeContext('Global');
+                    break;
+                }
               },
-              tooltip: 'List',
-              child: Icon(Icons.menu),
+              currentIndex:
+                  _currentIndex, // this will be set when a new tab is tapped
+              items: [
+                BottomNavigationBarItem(
+                  icon: new Icon(Icons.more),
+                  title: new Text('More'),
+                ),
+                BottomNavigationBarItem(
+                  icon: new Icon(Icons.list),
+                  title: new Text('Country'),
+                ),
+                BottomNavigationBarItem(
+                    icon: Icon(Icons.rounded_corner), title: Text('Global'))
+              ],
             )
-          : Container(), // This trailing comma makes auto-formatting nicer for build methods.
+          : Container(),
     );
   }
 
@@ -235,7 +240,6 @@ class _MyHomePageState extends State<MyHomePage> {
       setState(() {
         selectedData = Map.from(countData);
       });
-      print(selectedData);
     } else if (selected != null && selected.isNotEmpty) {
       setState(() {
         selectedData = countData['areas']
@@ -243,6 +247,15 @@ class _MyHomePageState extends State<MyHomePage> {
             .toList()[0];
       });
     }
+  }
+
+  void countryList() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => Country(country: country)),
+    ).then((value) {
+      changeContext(value);
+    });
   }
 
   void detailsPage() {
