@@ -22,7 +22,7 @@ Widget title(String text) {
 
 Widget cardCount(String data, String status) {
   final card = new Container(
-    height: 70.0,
+    height: getHeight(status),
     padding: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
     child: Column(
       mainAxisAlignment: MainAxisAlignment.center,
@@ -66,4 +66,16 @@ Color getStatusColor(String status) {
     color = COLOR_FATAL;
   }
   return color;
+}
+
+double getHeight(String status) {
+  double height;
+  if (status == CONST_ACTIVE) {
+    height = 70;
+  } else if (status == CONST_RECOVERED) {
+    height = 75;
+  } else if (status == CONST_FATAL) {
+    height = 70;
+  }
+  return height;
 }

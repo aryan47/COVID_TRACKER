@@ -14,6 +14,8 @@ class MyInheritedWidget extends InheritedWidget {
 
   String _latestAppVersion;
   BehaviorSubject _refresh = BehaviorSubject.seeded(false);
+  BehaviorSubject _globalData = BehaviorSubject.seeded(false);
+
 
 
 
@@ -22,6 +24,8 @@ class MyInheritedWidget extends InheritedWidget {
   String get latestAppVersion => _latestAppVersion;
 
   BehaviorSubject get refresh => _refresh;
+  BehaviorSubject get showGlobalData => _globalData;
+
 
   static MyInheritedWidget of(BuildContext context) {
     return context.dependOnInheritedWidgetOfExactType<MyInheritedWidget>();

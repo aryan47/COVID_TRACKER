@@ -87,6 +87,7 @@ class _MyHomePageState extends State<MyHomePage> {
     super.initState();
 
     loading = BehaviorSubject.seeded(false);
+
     loading.stream.listen((event) {
       if (event) {
         loadedApiCount += 1;
@@ -112,6 +113,11 @@ class _MyHomePageState extends State<MyHomePage> {
     MyInheritedWidget.of(context).refresh.stream.listen((event) {
       if (event) {
         initiateApiCall();
+      }
+    });
+    MyInheritedWidget.of(context).showGlobalData.stream.listen((event) {
+      if (event) {
+        changeContext('Global');
       }
     });
   }
@@ -209,7 +215,13 @@ class _MyHomePageState extends State<MyHomePage> {
 
   void changeContext(String selected) {
     selectedCountry = selected;
-    if (selected.isNotEmpty) {
+    if (selected.isNotEmpty && selected == "Global") {
+      selectedData = Map.from(countData);
+      setState(() {
+        selectedData.remove('areas');
+      });
+      print(selectedData);
+    } else if (selected.isNotEmpty) {
       setState(() {
         selectedData = countData['areas']
             .where((value) => value['displayName'] == selected)

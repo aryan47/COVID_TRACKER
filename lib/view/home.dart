@@ -14,9 +14,8 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
+  final refreshKey = GlobalKey<RefreshIndicatorState>();
 
-  var refreshKey = GlobalKey<RefreshIndicatorState>();
-  
   Future<Null> refreshList() async {
     refreshKey.currentState?.show(atTop: false);
     MyInheritedWidget.of(context).refresh.add(true);
@@ -49,11 +48,38 @@ class _HomeState extends State<Home> {
             background: ListView(
               children: <Widget>[
                 counter(widget.countData),
-                Center(
-                  child: FlatButton.icon(
+                ButtonBar(
+                  alignment: MainAxisAlignment.spaceAround,
+                  buttonPadding: EdgeInsets.all(0),
+                  children: <Widget>[
+                    FlatButton.icon(
                       onPressed: () {},
-                      icon: Icon(Icons.info_outline),
-                      label: Text('Details')),
+                      icon: Icon(
+                        Icons.info_outline,
+                        color: Colors.grey[700],
+                      ),
+                      label: Text(
+                        'Details',
+                        style: TextStyle(color: Colors.grey[700]),
+                      ),
+                    ),
+                    FlatButton.icon(
+                      onPressed: () {
+                        MyInheritedWidget.of(context)
+                            .showGlobalData
+                            .sink
+                            .add(true);
+                      },
+                      icon: Icon(
+                        Icons.info_outline,
+                        color: Colors.grey[700],
+                      ),
+                      label: Text(
+                        'Global',
+                        style: TextStyle(color: Colors.grey[700]),
+                      ),
+                    ),
+                  ],
                 )
               ],
             ),
