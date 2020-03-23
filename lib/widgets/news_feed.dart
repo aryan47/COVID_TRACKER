@@ -3,7 +3,6 @@ import 'package:corona_tracker/widgets/MyInheritedWidget.dart';
 import 'package:flutter/material.dart';
 
 Widget newsFeed(List<dynamic> data, BuildContext context) {
-
   return Container(
     decoration: BoxDecoration(
       color: Colors.white,
@@ -33,14 +32,26 @@ Widget newsFeed(List<dynamic> data, BuildContext context) {
                 style: TextStyle(color: Colors.red, fontSize: 10),
               ),
             ),
-            title: Text(
-              removeAllHtmlTags(data[index]['title'] ?? ''),
-              style: TextStyle(color: COLOR_FONT),
-            ),
-            subtitle: Text(
-              removeAllHtmlTags(data[index]['smallDesc'] ?? ''),
-              style: TextStyle(color: COLOR_SUB_FONT),
-            ),
+            title: data[index]['subType'] == "quotes"
+                ? Text(
+                    removeAllHtmlTags("\"" + data[index]['title'] + "\"" ?? ''),
+                    style: TextStyle(color: COLOR_FONT),
+                  )
+                : Text(
+                    removeAllHtmlTags(data[index]['title'] ?? ''),
+                    style: TextStyle(color: COLOR_FONT),
+                  ),
+            subtitle: data[index]['subType'] == "quotes"
+                ? Text(
+                    "---" +
+                        removeAllHtmlTags(
+                            data[index]['lbmdescrptionXML'] ?? ''),
+                    style: TextStyle(color: COLOR_FONT),
+                  )
+                : Text(
+                    removeAllHtmlTags(data[index]['smallDesc'] ?? ''),
+                    style: TextStyle(color: COLOR_SUB_FONT),
+                  ),
           ),
         );
       },

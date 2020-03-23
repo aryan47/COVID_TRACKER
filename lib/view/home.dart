@@ -53,7 +53,12 @@ class _HomeState extends State<Home> {
                   buttonPadding: EdgeInsets.all(0),
                   children: <Widget>[
                     FlatButton.icon(
-                      onPressed: () {},
+                      onPressed: () {
+                        MyInheritedWidget.of(context)
+                            .detailsClicked
+                            .sink
+                            .add(true);
+                      },
                       icon: Icon(
                         Icons.info_outline,
                         color: Colors.grey[700],

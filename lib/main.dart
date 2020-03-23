@@ -120,6 +120,11 @@ class _MyHomePageState extends State<MyHomePage> {
         changeContext('Global');
       }
     });
+    MyInheritedWidget.of(context).detailsClicked.stream.listen((event) {
+      if (event) {
+        // changeContext('Global');
+      }
+    });
   }
 
   void initiateApiCall() {
