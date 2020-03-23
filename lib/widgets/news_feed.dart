@@ -18,40 +18,50 @@ Widget newsFeed(List<dynamic> data, BuildContext context) {
       itemBuilder: (context, index) {
         return Container(
           decoration: BoxDecoration(color: Colors.white),
-          child: ListTile(
-            leading: Container(
-              padding: EdgeInsets.all(3),
-              decoration: BoxDecoration(
-                border: Border.all(color: Colors.red),
-                borderRadius: BorderRadius.all(
-                  Radius.circular(8),
+          child: ListView(
+            shrinkWrap: true,
+            physics: ScrollPhysics(),
+            children: <Widget>[
+              ListTile(
+                leading: Container(
+                  padding: EdgeInsets.all(3),
+                  decoration: BoxDecoration(
+                    border: Border.all(color: Colors.red),
+                    borderRadius: BorderRadius.all(
+                      Radius.circular(8),
+                    ),
+                  ),
+                  child: Text(
+                    removeAllHtmlTags(data[index]['shortDateTime'] ?? ''),
+                    style: TextStyle(color: Colors.red, fontSize: 10),
+                  ),
                 ),
-              ),
-              child: Text(
-                removeAllHtmlTags(data[index]['shortDateTime'] ?? ''),
-                style: TextStyle(color: Colors.red, fontSize: 10),
-              ),
-            ),
-            title: data[index]['subType'] == "quotes"
-                ? Text(
-                    removeAllHtmlTags("\"" + data[index]['title'] + "\"" ?? ''),
-                    style: TextStyle(color: COLOR_FONT),
-                  )
-                : Text(
-                    removeAllHtmlTags(data[index]['title'] ?? ''),
-                    style: TextStyle(color: COLOR_FONT),
-                  ),
-            subtitle: data[index]['subType'] == "quotes"
-                ? Text(
-                    "---" +
+                title: data[index]['subType'] == "quotes"
+                    ? Text(
                         removeAllHtmlTags(
-                            data[index]['lbmdescrptionXML'] ?? ''),
-                    style: TextStyle(color: COLOR_FONT),
-                  )
-                : Text(
-                    removeAllHtmlTags(data[index]['smallDesc'] ?? ''),
-                    style: TextStyle(color: COLOR_SUB_FONT),
-                  ),
+                            "\"" + data[index]['title'] + "\"" ?? ''),
+                        style: TextStyle(color: COLOR_FONT),
+                      )
+                    : Text(
+                        removeAllHtmlTags(data[index]['title'] ?? ''),
+                        style: TextStyle(color: COLOR_FONT),
+                      ),
+                subtitle: data[index]['subType'] == "quotes"
+                    ? Text(
+                        "- " +
+                            removeAllHtmlTags(
+                                data[index]['lbmdescrptionXML'] ?? ''),
+                        style: TextStyle(color: COLOR_FONT),
+                      )
+                    : Text(
+                        removeAllHtmlTags(data[index]['smallDesc'] ?? ''),
+                        style: TextStyle(color: COLOR_SUB_FONT),
+                      ),
+              ),
+              data[index]['imgUrl'] != null
+                  ? Image.network("https://"+data[index]['imgUrl'])
+                  : Container()
+            ],
           ),
         );
       },
