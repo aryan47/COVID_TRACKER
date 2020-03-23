@@ -8,6 +8,8 @@ final COLOR_BACKGROUND = Color.fromRGBO(255, 255, 255, 0.9);
 final COLOR_TILE = Colors.white;
 final COLOR_FONT = Color.fromRGBO(51, 51, 51, 1);
 final COLOR_SUB_FONT = Color.fromRGBO(118, 118, 118, 1);
+final COLOR_APP_BAR = Colors.grey;
+
 
 
 final CONST_ACTIVE = "Active";

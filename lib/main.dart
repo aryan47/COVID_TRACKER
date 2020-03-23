@@ -204,18 +204,22 @@ class _MyHomePageState extends State<MyHomePage> {
       body: appStarted
           ? Home(countData: selectedData, newsData: newsData)
           : Center(child: CircularProgressIndicator()),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => Country(country: country)),
-          ).then((value) {
-            changeContext(value);
-          });
-        },
-        tooltip: 'List',
-        child: Icon(Icons.menu),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
+      floatingActionButton: appStarted
+          ? FloatingActionButton(
+              backgroundColor: COLOR_APP_BAR,
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => Country(country: country)),
+                ).then((value) {
+                  changeContext(value);
+                });
+              },
+              tooltip: 'List',
+              child: Icon(Icons.menu),
+            )
+          : Container(), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
 

@@ -17,28 +17,41 @@ Future<void> checkAppVersion(String oldVersion, String latestVersion,
       barrierDismissible: false, // user must tap button!
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('New update available'),
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadiusDirectional.circular(15)),
+          title: Center(child: Text('New update available')),
           content: SingleChildScrollView(
             child: ListBody(
               children: <Widget>[
-                Text('Please update the app'),
+                Center(child: Text('Please update the app')),
               ],
             ),
           ),
           actions: <Widget>[
-            FlatButton(
-              child: Text('Update'),
-              onPressed: () {
-                Navigator.of(context).pop();
-                launchURL(playStoreUrl);
-              },
-            ),
-            FlatButton(
-              child: Text('Cancel'),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
+            ButtonBar(
+              alignment: MainAxisAlignment.center,
+              children: <Widget>[
+                FlatButton(
+                  child: Text(
+                    'UPDATE',
+                    style: TextStyle(color: Colors.green),
+                  ),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                    launchURL(playStoreUrl);
+                  },
+                ),
+                FlatButton(
+                  child: Text(
+                    'NO, THANKS',
+                    style: TextStyle(color: Colors.red),
+                  ),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ],
+            )
           ],
         );
       },

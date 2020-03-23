@@ -1,3 +1,4 @@
+import 'package:corona_tracker/shared/constants.dart';
 import 'package:corona_tracker/widgets/MyInheritedWidget.dart';
 import 'package:corona_tracker/widgets/counter.dart';
 import 'package:corona_tracker/widgets/news_feed.dart';
@@ -32,7 +33,7 @@ class _HomeState extends State<Home> {
         SliverAppBar(
           expandedHeight: 200,
           floating: false,
-          backgroundColor: Colors.grey,
+          backgroundColor: COLOR_APP_BAR,
           pinned: true,
           flexibleSpace: FlexibleSpaceBar(
             centerTitle: true,
@@ -61,11 +62,11 @@ class _HomeState extends State<Home> {
                       },
                       icon: Icon(
                         Icons.info_outline,
-                        color: Colors.grey[700],
+                        color: COLOR_APP_BAR[700],
                       ),
                       label: Text(
                         'Details',
-                        style: TextStyle(color: Colors.grey[700]),
+                        style: TextStyle(color: COLOR_APP_BAR[700]),
                       ),
                     ),
                     FlatButton.icon(
@@ -77,11 +78,11 @@ class _HomeState extends State<Home> {
                       },
                       icon: Icon(
                         Icons.info_outline,
-                        color: Colors.grey[700],
+                        color: COLOR_APP_BAR[700],
                       ),
                       label: Text(
                         'Global',
-                        style: TextStyle(color: Colors.grey[700]),
+                        style: TextStyle(color: COLOR_APP_BAR[700]),
                       ),
                     ),
                   ],
@@ -94,7 +95,7 @@ class _HomeState extends State<Home> {
           delegate: SliverChildListDelegate(
             [
               Container(
-                color: Colors.grey,
+                color: COLOR_APP_BAR,
                 child: newsFeed(widget.newsData, context),
               ),
             ],

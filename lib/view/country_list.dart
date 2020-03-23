@@ -1,3 +1,4 @@
+import 'package:corona_tracker/shared/constants.dart';
 import 'package:flutter/material.dart';
 
 class Country extends StatefulWidget {
@@ -28,6 +29,7 @@ class _CountryState extends State<Country> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Country'),
+        backgroundColor: COLOR_APP_BAR,
       ),
       body: Stack(
         children: <Widget>[
