@@ -9,6 +9,7 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:rxdart/rxdart.dart';
+import 'package:share/share.dart';
 
 import 'services/news_service.dart';
 import 'view/country_list.dart';
@@ -95,7 +96,7 @@ class _MyHomePageState extends State<MyHomePage> {
       if (event) {
         loadedApiCount += 1;
       }
-      if (loadedApiCount == 2) {
+      if (loadedApiCount == 1) {
         loadedApiCount = 0;
         setState(() {
           appStarted = true;
@@ -124,14 +125,13 @@ class _MyHomePageState extends State<MyHomePage> {
   void initiateApiCall() {
     databaseReference = FirebaseDatabase.instance.reference();
     fetchApis(databaseReference).then((value) {
-
-      countApi = value['COUNT_API'];
+      // countApi = value['COUNT_API'];
       newsApi = value['NEWS_API'];
       latestAppVersion = value['LATEST_APP_VERSION'];
       playStoreUrl = value['PLAY_STORE_URL'];
       appShareLink = value['APP_SHARE_LINK'];
 
-      countApiCall(countApi);
+      // countApiCall(countApi);
       newsApiCall(newsApi);
     });
   }
@@ -145,17 +145,17 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
-  void countApiCall(value) {
-    fetchCount(value).then((value) {
-      loading.sink.add(true);
-      country = value['areas'].map((value) => value['displayName']).toList();
-      setState(() {
-        countData = value;
-        selectedData = new Map.from(countData);
-        changeContext(selectedCountry ?? 'India');
-      });
-    });
-  }
+  // void countApiCall(value) {
+  //   fetchCount(value).then((value) {
+  //     loading.sink.add(true);
+  //     country = value['areas'].map((value) => value['displayName']).toList();
+  //     setState(() {
+  //       countData = value;
+  //       selectedData = new Map.from(countData);
+  //       changeContext(selectedCountry ?? 'India');
+  //     });
+  //   });
+  // }
 
   // Platform messages are asynchronous, so we initialize in an async method.
   void _initPlatformState() async {
@@ -195,76 +195,91 @@ class _MyHomePageState extends State<MyHomePage> {
     }
 
     return Scaffold(
+      appBar: AppBar(
+        title: Text('Live News'),
+        actions: <Widget>[
+          FlatButton(
+            onPressed: () {
+              Share.share(appShareLink);
+            },
+            child: Text(
+              'Share',
+              style: TextStyle(color: Colors.white),
+            ),
+          )
+        ],
+        centerTitle: true,
+      ),
       body: appStarted
           ? Home(countData: selectedData, newsData: newsData)
           : LoadingScreen(),
-      bottomNavigationBar: appStarted
-          ? BottomNavigationBar(
-              backgroundColor: Colors.grey[100],
-              onTap: (int index) {
-                _currentIndex = index;
-                switch (index) {
-                  case 0:
-                    detailsPage();
-                    break;
-                  case 1:
-                    countryList();
-                    break;
-                  case 2:
-                    changeContext('Global');
-                    break;
-                }
-              },
-              currentIndex:
-                  _currentIndex, // this will be set when a new tab is tapped
-              items: [
-                BottomNavigationBarItem(
-                  icon: new Icon(Icons.more),
-                  title: new Text('More'),
-                ),
-                BottomNavigationBarItem(
-                  icon: new Icon(Icons.list),
-                  title: new Text('Country'),
-                ),
-                BottomNavigationBarItem(
-                    icon: Icon(Icons.rounded_corner), title: Text('Global'))
-              ],
-            )
-          : Container(),
+      // bottomNavigationBar: appStarted
+      //     ? BottomNavigationBar(
+      //         backgroundColor: Colors.grey[100],
+      //         onTap: (int index) {
+      //           _currentIndex = index;
+      //           switch (index) {
+      //             case 0:
+      //               detailsPage();
+      //               break;
+      //             case 1:
+      //               countryList();
+      //               break;
+      //             case 2:
+      //               changeContext('Global');
+      //               break;
+      //           }
+      //         },
+      //         currentIndex:
+      //             _currentIndex, // this will be set when a new tab is tapped
+      //         items: [
+      //           BottomNavigationBarItem(
+      //             icon: new Icon(Icons.more),
+      //             title: new Text('More'),
+      //           ),
+      //           BottomNavigationBarItem(
+      //             icon: new Icon(Icons.list),
+      //             title: new Text('Country'),
+      //           ),
+      //           BottomNavigationBarItem(
+      //               icon: Icon(Icons.rounded_corner), title: Text('Global'))
+      //         ],
+      //       )
+      //     : Container(),
     );
   }
 
-  void changeContext(String selected) {
-    selectedCountry = selected;
-    if (selected != null && selected.isNotEmpty && selected == "Global") {
-      setState(() {
-        selectedData = Map.from(countData);
-      });
-    } else if (selected != null && selected.isNotEmpty) {
-      setState(() {
-        selectedData = countData['areas']
-            .where((value) => value['displayName'] == selected)
-            .toList()[0];
-      });
-    }
-  }
+  // void changeContext(String selected) {
+  //   selectedCountry = selected;
+  //   if (selected != null && selected.isNotEmpty && selected == "Global") {
+  //     setState(() {
+  //       selectedData = Map.from(countData);
+  //     });
+  //   } else if (selected != null && selected.isNotEmpty) {
+  //     setState(() {
+  //       selectedData = countData['areas']
+  //           .where((value) => value['displayName'] == selected)
+  //           .toList()[0];
+  //     });
+  //   }
+  // }
 
-  void countryList() {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => Country(country: country)),
-    ).then((value) {
-      changeContext(value);
-    });
-  }
+  // void countryList() {
+  //   Navigator.push(
+  //     context,
+  //     MaterialPageRoute(builder: (context) => Country(country: country)),
+  //   ).then((value) {
+  //     changeContext(value);
+  //   });
+  // }
 
-  void detailsPage() {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-          builder: (context) => Details(areas: selectedData['areas'] ?? [])),
-    ).then((value) {
-      changeContext(value);
-    });
-  }
+  // void detailsPage() {
+  //   Navigator.push(
+  //     context,
+  //     MaterialPageRoute(
+  //         builder: (context) => Details(areas: selectedData['areas'] ?? [])),
+  //   ).then((value) {
+  //     changeContext(value);
+  //   });
+  // }
 }
